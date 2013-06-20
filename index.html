@@ -4,6 +4,22 @@
     <title>RDF Patch &ndash; Recording changes to an RDF Dataset</title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
 
+<!--
+   Copyright 2013 Andy Seaborne
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
     <style type="text/css">
       .box { 
           border: thin solid #888888;
@@ -12,6 +28,7 @@
           margin-left:0 ; margin-right: 10ex; 
           margin-top: 0.1ex ; margin-bottom: 0.1ex ;
       }
+      .todo		{ font-size: 80% ; color: #444 ; }    
     </style>
 
     <script src='http://www.w3.org/Tools/respec/respec-w3c-common' class='remove'></script>
@@ -21,14 +38,19 @@
           // document info
           specStatus:           "unofficial",
           shortName:            "rdf-patch",
-	      editors:  [
-              { name: "Andy Seaborne"
-                //, 
-	            //url: "http://jena.apache.org/",
-                //company: "Apache Jena", 
-                //companyURL: "http://jena.apache.org/"
+	      editors: 
+          [
+              { name: "Andy Seaborne" 
+	            //, url: "http://jena.apache.org/",
+                , company: "Apache Jena"
+                //, companyURL: "http://jena.apache.org/"
               } ,
           ],
+
+      overrideCopyright: 
+      "<p class='copyright'>This document is licensed under the "+
+      "<a href=\"http://www.apache.org/licenses/LICENSE-2.0.html\">Apache License, Version 2.0</a>"+
+      "</p>",
 
           // publishDate:   "2013-06-20",
           // previousMaturity: "WD",
@@ -50,6 +72,14 @@
   </head>
   <body>
 
+    <h2>Notes</h2>
+    <div class="todo">
+      <p>@@</p>
+      <ul>
+        <li>Handling very long literals (VLL) - special handling?</li>
+      </ul>
+    </div>
+      
     <section id='abstract'>
       <p>
         RDF Patch is a file format for recording changes made to an RDF
