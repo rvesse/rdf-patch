@@ -456,6 +456,160 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
         not there before.
       </p>
     </section>
+
+    <section>
+      <h2>Relationship to SPARQL Update</h2>
+      <ul>
+        <li><tt>INSERT DATA</tt> and <tt>DELETE DATA</tt></li>
+        <li>Can use more readable form - Turtle-like syntax.</li>
+        <li>Different bnode label handling (skolemization / special
+          interpretation of blank node labels needed)</li>
+      </ul>
+        
+    </section>
+      
+
+    <section class="appendix">
+      <h2>Internet Media Type, File Extension and Macintosh File Type</h2>
+      <p>The Internet Media Type / MIME Type for RDF Patch is "application/rdf-patch".</p>
+      <p>The character set RDF Patch is "UTF-8".</p>
+      <p>It is recommended that RDF Patch files have the extension ".rdfp" (all lowercase) on all platforms.</p>
+      <p>
+        It is recommended that RDF Patch files stored on Macintosh HFS file
+        systems be given a file type of "TEXT".
+      </p>
+      
+      <!--
+      <p>
+        The information that follows will be submitted to
+        the IESG for review, approval, and registration with IANA.
+      </p>
+      <dl>
+        <dt>Type name:</dt>
+        <dd>application</dd>
+        <dt>Subtype name:</dt>
+        <dd>rdf-patch</dd>
+        <dt>Required parameters:</dt>
+        <dd>None</dd>
+        <dt>Optional parameters:</dt>
+        <dd>None</dd>
+
+        <dt>Encoding considerations:</dt>
+        <dd>
+          <p>The syntax of RDF patch is expressed over code points in
+            Unicode [ref]. The encoding is always UTF-8 [ref].
+          </p>
+          <p>Unicode code points may also be expressed using an \uXXXX
+            (U+0000 to U+FFFF) or \UXXXXXXXX syntax (for U+10000 onwards)
+            where X is a hexadecimal digit [0-9A-Fa-f]</p>
+        </dd>
+        <dt>Security considerations:</dt>
+        <dd>
+          <p>
+            RDF Patch is a general-purpose assertion language; applications
+            may evaluate given data to infer more assertions or to
+            dereference IRIs, invoking the security considerations of the
+            scheme for that IRI. Note in particular, the privacy issues in
+            [<cite><a href="#bib-RFC3023" rel="biblioentry"
+            class="bibref">RFC3023</a></cite>] section 10 for HTTP
+            IRIs. Data obtained from an inaccurate or malicious data source
+            may lead to inaccurate or misleading conclusions, as well as
+            the dereferencing of unintended IRIs. Care must be taken to
+            align the trust in consulted resources with the sensitivity of
+            the intended use of the data; inferences of potential medical
+            treatments would likely require different trust than inferences
+            for trip planning.
+          </p>
+
+          <p>
+            RDF Patch is used to express arbitrary application data;
+            security considerations will vary by domain of use. Security
+            tools and protocols applicable to text (e.g. PGP encryption,
+            MD5 sum validation, password-protected compression) may also be
+            used on RDF Patch documents. Security/privacy protocols must be
+            imposed which reflect the sensitivity of the embedded
+            information.
+          </p>
+          <p>
+            RDF Patch can express data which is presented to the user, for
+            example, <abbr title="Resource Description
+            Framework">RDF</abbr> Schema labels. Application rendering
+            strings retrieved from untrusted RDF Patch documents must
+            ensure that malignant strings may not be used to mislead the
+            reader. The security considerations in the media type
+            registration for XML ([<cite><a href="#bib-RFC3023"
+            rel="biblioentry" class="bibref">RFC3023</a></cite>] section
+            10) provide additional guidance around the expression of
+            arbitrary data and markup.
+          </p>
+          <p>
+            RDF Patch uses IRIs as term identifiers. Applications
+            interpreting data expressed in RDF Patch should address the
+            security issues of
+            <a class="norm"
+               href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource
+              Identifiers (IRIs)</a> [<cite><a href="#bib-RFC3987"
+                                               rel="biblioentry" class="bibref">RFC3987</a></cite>] Section 8, as
+            well as
+            <a class="norm" href="http://www.ietf.org/rfc/rfc3986.txt">Uniform Resource Identifier (URI): Generic Syntax</a> [<cite><a href="#bib-RFC3986" rel="biblioentry"
+class="bibref">RFC3986</a></cite>] 
+            Section 7.
+          </p>
+
+          <p>
+            Multiple IRIs may have the same appearance. Characters in
+            different scripts may look similar (a Cyrillic "о" may appear
+            similar to a Latin "o"). A character followed by combining
+            characters may have the same visual representation as another
+            character (LATIN SMALL LETTER E followed by COMBINING ACUTE
+            ACCENT has the same visual representation as LATIN SMALL LETTER
+            E WITH ACUTE).
+            </p>
+          <p>
+            Any person or application that is writing or interpreting data
+            in RDF Patch must take care to use the IRI that matches the
+            intended semantics, and avoid IRIs that make look similar.
+            Further information about matching of similar characters can be
+            found in <a class="inform"
+            href="http://www.unicode.org/reports/tr36/">Unicode Security
+            Considerations</a> [<cite><a href="#bib-UNISEC"
+            rel="biblioentry" class="bibref">UNISEC</a></cite>] and
+    <a class="norm"
+    href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource
+    Identifiers (IRIs)</a> [<cite><a href="#bib-RFC3987" rel="biblioentry"
+    class="bibref">RFC3987</a></cite>] Section 8.
+    </p>
+          </dd>
+          <dt>Interoperability considerations:</dt>
+          <dd>There are no known interoperability issues.</dd>
+          <dt>Published specification:</dt>
+          <dd>This specification.</dd>
+          <dt>Applications which use this media type:</dt>
+          <dd>
+            No widely deployed applications are known to use this media
+            type. It may be used by some web services and clients consuming
+            their data.
+          </dd>
+          <dt>Additional information:</dt>
+          <dt>Magic number(s):</dt>
+          <dd>None</dd>
+          <dt>File extension(s):</dt>
+          <dd>".rdfp"</dd>
+          <dt>Macintosh file type code(s):</dt>
+          <dd>"TEXT"</dd>
+          <dt>Person &amp; email address to contact for further information:</dt>
+          <dd>Andy Seaborne &lt;andy@a.o&gt;</dd>
+          <dt>Intended usage:</dt>
+          <dd>COMMON</dd>
+          <dt>Restrictions on usage:</dt>
+          <dd>None</dd>
+          <dt>Author/Change controller:</dt>
+          <dd>TDB</dd>
+        </dl>
+      -->
+    </section>
+
+
   </body>
 </html>
 
