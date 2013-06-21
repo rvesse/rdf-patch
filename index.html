@@ -83,7 +83,6 @@
         <li>Explicit type marker (patch, reversible patch, ...)
         <li>Inline meta data for the patch</li>
         <li>Link meta data for the patch</li>
-        <li>Rename 'minimal'</li>
         <li>Binary encoding</li>
       </ul>
       <p>@@</p>
@@ -122,13 +121,13 @@
           The HTTP PATCH method, introduced
           in <a href="http://tools.ietf.org/html/rfc5789">RFC 5789</a> (March 2010),
           is for modification of a web resource by sending a description of the
-          changes to the resourse.  Changes are limited to that resource.
+          changes to the resource.  Changes are limited to that resource.
         </p>
         <p>
-          SPARQL Update may not be suitable and follwos a service oriented
+          SPARQL Update may not be suitable and follows a service oriented
           model of operation.  A more focused and light weight solution is
           given by RDF Patch.  For example, where the web resource is an
-          RDf graph, not an RDF dataset.
+          RDF graph, not an RDF dataset.
         </p>
         <p>
           No new web resources can be created by RDF patch. Data can only
@@ -200,7 +199,7 @@
  A &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Bob" .</pre>
 
       <p>
-        In RDF patch, the first column is the oepration marker.
+        In RDF patch, the first column is the operation marker.
         <tt>A</tt> means "add" and <tt>D</tt> means "delete".
       </p>
       <p>
@@ -223,7 +222,7 @@
       </p>
       <p>
         The format is rows of RDF terms (URIs, literals, bNodes), with each
-        row ending in a "." (DOT).  Prefix names, SPARQL-styles variables
+        row ending in a "." (<tt>DOT</tt>).  Prefix names, SPARQL-styles variables
         and keywords (bare word without a ":" in them) are allowed.
 
       <p>
@@ -233,14 +232,14 @@
 
       <p>
         <tt>#</tt> starts a comment and it runs until the end of line.
-        Note that RDF Tuple rows are delimited by DOT and may have white
+        Note that RDF Tuple rows are delimited by <tt>DOT</tt> and may have white
         space between the RDF terms, including newlines.
       </p>
 
       <p>RDF Tuples uses the following keywords:</p>
        <table class="simple">
         <thead>
-          <tr><th>Marker</th><th>Meaning</th></tr>
+          <tr><th>Keyword</th><th>Meaning</th></tr>
         </thead>
         <tbody>
            <tr>
@@ -256,11 +255,11 @@
         </tbody>
       </table>
 
-      <p>RDF Patch puts a marker in the first item of each row:</p>
+      <p>RDF Patch puts a keyword in the first item of each row:</p>
 
       <table class="simple">
         <thead>
-          <tr><th>Marker</th><th>Meaning</th></tr>
+          <tr><th>Keyword</th><th>Meaning</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -276,7 +275,7 @@
         </tbody>
       </table>
 
-      <p>followed by 3 or 4 RDF terms; 3 for a triple, 4 for a quad.</p>
+      <p>This is followed by 3 or 4 RDF terms; 3 for a triple, 4 for a quad.</p>
 
       <p>Using RDF Tuples, RDF Patch, has the following characteristics:</p>
 
@@ -294,7 +293,7 @@
           changes.
         </li>
         <li>
-          Blank nodes are recorded as <tt>:<i>_id</i></tt> where <i>id</i> can be the
+          Blank nodes are recorded as <tt>_:<i>id</i></tt> where <i>id</i> can be the
           system-internal identifier for the blank node.  This means that
           changes involving blank nodes can be replayed to get an identical
           datasets to the one where the changes were originally made.  This
@@ -324,12 +323,12 @@
       </p>
 
       <p>
-        Prefixed names are allowed (e.g. rdf:type) using Turtle style @prefix and expansion
+        Prefixed names are allowed (e.g. <tt>rdf:type</tt>) using Turtle style <tt>@prefix</tt> and expansion
         rules.
       </p>
 
       <p>
-        Relative URIs are not allowed.  There is no @base.
+        Relative URIs are not allowed.  There is no <tt>@base</tt>.
       </p>
     </section>
 
@@ -376,13 +375,13 @@ VAR     = (from SPARQL)</pre>
       <p>
         After the first keyword <tt>RowItem</tt>, there are 3 or
         4 <tt>RowItem</tt>s which are either RDF Terms or the
-        keyword <tt>R</tt>, for an RDF term erpeated from the  last use in
+        keyword <tt>R</tt>, for an RDF term repeated from the  last use in
         this row position.
       </p>
       <p>
         Blank node labels are treated as encoded internal system
-        identifiers.  System may refuse to perfrom changes 
-        if they do not recogize the label format.
+        identifiers.  System may refuse to perform changes 
+        if they do not recognize the label format.
       </p>
       <p>
         RDF Patch does not allow <tt>VAR</tt>.
@@ -452,22 +451,24 @@ A &lt;http://example/bob&gt; foaf:name "Bob" &lt;http://example/graphName&gt; .
     </section>
 
     <section>
-      <h2>Minimize actions</h2>
-
-      <p class="todo">@@ Need a better name</p>
+      <h2>Canonical Patches</h2>
 
       <p>
         A further way in which the size of a diff file can be reduced is to
-        only record changes that do have an effect of a change.  And RDF
+        only record changes that do have an effect of a change.  An RDF
         Dataset is set of quads, no duplicates, so if a quad is added that
         is already in the dataset, then no record is needed as no effective
         change occurs.  Similarly for deletes, if the quad does not exist,
         a delete action has no effect.
       </p>
+      
+      <p>
+        A RDF patch that only records actual changes is said to be a <strong>canonical patch</strong>.
+      </p>
 
       <p>
         However, testing before every insert or delete can be expensive or
-        otherwise impractical and so this style is not required.
+        otherwise impractical and so this style is not required:
         </p>
 
 <pre class="box">
@@ -475,13 +476,13 @@ A &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt
 A &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/g&gt; .
 </pre>
 
-      <p>has the same effect as:</p>
+      <p>Has the same effect as:</p>
 
 <pre class="box">
 A &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt;http://example/g&gt; .
 </pre>
 
-      <p>if there was no such quad in the dataset before the delta started.</p>
+      <p>If there was no such quad in the dataset before the delta started.</p>
 
       <p>The quads don't need to be adjacent:</p>
 
@@ -498,7 +499,7 @@ A &lt;http://example/s&gt; &lt;http://example/p&gt; &lt;http://example/o&gt; &lt
 A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g2&gt; .
 </pre>
       <p>
-        When written in minimize form the RDF Patch can be run backwards,
+        When written in canonical form the RDF Patch can be run backwards,
         to undo a change.  This only works when real changes are recorded
         because otherwise knowing a triple is added does not mean it was
         not there before.
@@ -520,6 +521,8 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
     -->
 
     <section class="appendix" id="media-type">
+      <p class="todo">@@ Use application/rdf-patch+text for text serialization and application/rdf-patch+binary for TBD binary serialization</p>
+    
       <h2>Internet Media Type, File Extension and Macintosh File Type</h2>
       <p>The Internet Media Type / MIME Type for RDF Patch is "application/rdf-patch".</p>
       <p>The character set RDF Patch is "UTF-8".</p>
