@@ -80,7 +80,13 @@
       <p>@@</p>
       <ul>
         <li>Handling very long literals (VLL) - special handling?</li>
+        <li>Explicit type marker (patch, reversible patch, ...)
+        <li>Inline meta data for the patch</li>
+        <li>Link meta data for the patch</li>
+        <li>Rename 'minimal'</li>
+        <li>Binary encoding</li>
       </ul>
+      <p>@@</p>
     </div>
       
     <section id='abstract'>
@@ -107,8 +113,28 @@
     <section>
       <h2>Use Cases</h2>
       <p>
-        Use cases:
+        This section outlines some use cases for RDF patch.
       </p>
+
+      <section>
+        <h3>HTTP PATCH</h3>
+        <p>
+          The HTTP PATCH method, introduced
+          in <a href="http://tools.ietf.org/html/rfc5789">RFC 5789</a> (March 2010),
+          is for modification of a web resource by sending a description of the
+          changes to the resourse.  Changes are limited to that resource.
+        </p>
+        <p>
+          SPARQL Update may not be suitable and follwos a service oriented
+          model of operation.  A more focused and light weight solution is
+          given by RDF Patch.  For example, where the web resource is an
+          RDf graph, not an RDF dataset.
+        </p>
+        <p>
+          No new web resources can be created by RDF patch. Data can only
+          be added and removed from an existing graph or dataset.
+        </p>
+      </section>
 
       <section>
         <h3>Incremental backup</h3>
@@ -139,10 +165,8 @@
           manner - that is, blank nodes within the dataset are treated
           identically.
         </p>
-    </section>
-
-
-
+      </section>
+      
       <section>
         <h3>Data Staging</h3>
         <p>
@@ -163,7 +187,7 @@
 
 
     <section>
-      <h2>Example</h2>
+      <h2>Illustrative Example</h2>
       <p>
         This examples delta adds a <tt>foaf:knows</tt> relationship, and
         changes the <tt>foaf:name</tt> triple for Bob.
@@ -176,16 +200,18 @@
  A &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Bob" .</pre>
 
       <p>
-        <tt>A</tt> means "add", <tt>D</tt> means "delete".
+        In RDF patch, the first column is the oepration marker.
+        <tt>A</tt> means "add" and <tt>D</tt> means "delete".
       </p>
       <p>
         The order in the file is significant - the changes happened in the
         order given so the first triple added with "Robert" as Bob's name
-        is removed by the later delete.
+        is removed by the later delete when the name is changed from
+        "Robert" to "Bob".
       </p>
     </section>
     <section>
-      <h2>Details</h2>
+      <h2>RDF Patch Details</h2>
       
       <p>
         An RDF Dataset is defined as a a set of a unnamed graph and zero or
@@ -206,7 +232,7 @@
       </p>
 
       <p>
-        <tt>\#</tt> starts a comment and it runs until the end of line.
+        <tt>#</tt> starts a comment and it runs until the end of line.
         Note that RDF Tuple rows are delimited by DOT and may have white
         space between the RDF terms, including newlines.
       </p>
@@ -268,19 +294,19 @@
           changes.
         </li>
         <li>
-          Blank nodes are recorded as "_:_id_" where _id_ can be the
+          Blank nodes are recorded as <tt>:<i>_id</i></tt> where <i>id</i> can be the
           system-internal identifier for the blank node.  This means that
           changes involving blank nodes can be replayed to get an identical
           datasets to the one where the changes were originally made.  This
-          is RDF Patch's interpretation of the <tt>\_:abc</tt> syntax;
+          is RDF Patch's interpretation of the <tt>_:abc</tt> syntax;
           other uses of RDF Tuples may have different scoping rules for
           blank node labels.
         </li>
       </ul>
     </section>
 
-    <section>
-      <h3>Abbreviation, compression and readability.</h3>
+    <section id='abbreviations'>
+      <h3>Abbreviation, Compression and Readability</h3>
 
       <p>
         To remove repetition, the value of an element in a row can be the
@@ -310,6 +336,7 @@
     <section>
       <h2>RDF Tuples Format</h2>
 
+      <p class="todo">@@Make formal</p>
       <p><i>Outline grammar</i></p>
 
       <p>
@@ -340,14 +367,30 @@ VAR     = (from SPARQL)</pre>
     <section>
       <h2>RDF Patch Use of RDF Tuples.</h2>
       
+      <p class="todo">@@Make formal</p>
       <p>
-        RDF patch uses RDF Tuples for triples or quads (N-Quad order).
+        RDF patch uses RDF Tuples for triples or quads (N-Quad order).  It
+        requires the first item in a row to be a keyword (<tt>A</tt>
+        or <tt>D</tt>). 
       </p>
-
+      <p>
+        After the first keyword <tt>RowItem</tt>, there are 3 or
+        4 <tt>RowItem</tt>s which are either RDF Terms or the
+        keyword <tt>R</tt>, for an RDF term erpeated from the  last use in
+        this row position.
+      </p>
+      <p>
+        Blank node labels are treated as encoded internal system
+        identifiers.  System may refuse to perfrom changes 
+        if they do not recogize the label format.
+      </p>
+      <p>
+        RDF Patch does not allow <tt>VAR</tt>.
+      </p>
     </section>
 
     <section>
-      <h2>RDF Patch Examples</h2>
+      <h2>Further RDF Patch Examples</h2>
 
     <section>
       <h3>Add a triple to a graph or default graph of the dataset</h3>
@@ -411,6 +454,8 @@ A &lt;http://example/bob&gt; foaf:name "Bob" &lt;http://example/graphName&gt; .
     <section>
       <h2>Minimize actions</h2>
 
+      <p class="todo">@@ Need a better name</p>
+
       <p>
         A further way in which the size of a diff file can be reduced is to
         only record changes that do have an effect of a change.  And RDF
@@ -459,6 +504,162 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
         not there before.
       </p>
     </section>
+
+    <!--
+    <section>
+      <h2>Relationship to SPARQL Update</h2>
+      <p class="todo">@@ Outline only</p>
+      <ul>
+        <li><tt>INSERT DATA</tt> and <tt>DELETE DATA</tt></li>
+        <li>Can use more readable form - Turtle-like syntax.</li>
+        <li>Different bnode label handling (skolemization / special
+          interpretation of blank node labels needed)</li>
+      </ul>
+        
+    </section>
+    -->
+
+    <section class="appendix" id="media-type">
+      <h2>Internet Media Type, File Extension and Macintosh File Type</h2>
+      <p>The Internet Media Type / MIME Type for RDF Patch is "application/rdf-patch".</p>
+      <p>The character set RDF Patch is "UTF-8".</p>
+      <p>It is recommended that RDF Patch files have the extension ".rdfp" (all lowercase) on all platforms.</p>
+      <p>
+        It is recommended that RDF Patch files stored on Macintosh HFS file
+        systems be given a file type of "TEXT".
+      </p>
+      
+      <!--
+      <p>
+        The information that follows will be submitted to
+        the IESG for review, approval, and registration with IANA.
+      </p>
+      <dl>
+        <dt>Type name:</dt>
+        <dd>application</dd>
+        <dt>Subtype name:</dt>
+        <dd>rdf-patch</dd>
+        <dt>Required parameters:</dt>
+        <dd>None</dd>
+        <dt>Optional parameters:</dt>
+        <dd>None</dd>
+
+        <dt>Encoding considerations:</dt>
+        <dd>
+          <p>The syntax of RDF patch is expressed over code points in
+            Unicode [ref]. The encoding is always UTF-8 [ref].
+          </p>
+          <p>Unicode code points may also be expressed using an \uXXXX
+            (U+0000 to U+FFFF) or \UXXXXXXXX syntax (for U+10000 onwards)
+            where X is a hexadecimal digit [0-9A-Fa-f]</p>
+        </dd>
+        <dt>Security considerations:</dt>
+        <dd>
+          <p>
+            RDF Patch is a general-purpose assertion language; applications
+            may evaluate given data to infer more assertions or to
+            dereference IRIs, invoking the security considerations of the
+            scheme for that IRI. Note in particular, the privacy issues in
+            [<cite><a href="#bib-RFC3023" rel="biblioentry"
+            class="bibref">RFC3023</a></cite>] section 10 for HTTP
+            IRIs. Data obtained from an inaccurate or malicious data source
+            may lead to inaccurate or misleading conclusions, as well as
+            the dereferencing of unintended IRIs. Care must be taken to
+            align the trust in consulted resources with the sensitivity of
+            the intended use of the data; inferences of potential medical
+            treatments would likely require different trust than inferences
+            for trip planning.
+          </p>
+
+          <p>
+            RDF Patch is used to express arbitrary application data;
+            security considerations will vary by domain of use. Security
+            tools and protocols applicable to text (e.g. PGP encryption,
+            MD5 sum validation, password-protected compression) may also be
+            used on RDF Patch documents. Security/privacy protocols must be
+            imposed which reflect the sensitivity of the embedded
+            information.
+          </p>
+          <p>
+            RDF Patch can express data which is presented to the user, for
+            example, <abbr title="Resource Description
+            Framework">RDF</abbr> Schema labels. Application rendering
+            strings retrieved from untrusted RDF Patch documents must
+            ensure that malignant strings may not be used to mislead the
+            reader. The security considerations in the media type
+            registration for XML ([<cite><a href="#bib-RFC3023"
+            rel="biblioentry" class="bibref">RFC3023</a></cite>] section
+            10) provide additional guidance around the expression of
+            arbitrary data and markup.
+          </p>
+          <p>
+            RDF Patch uses IRIs as term identifiers. Applications
+            interpreting data expressed in RDF Patch should address the
+            security issues of
+            <a class="norm"
+               href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource
+              Identifiers (IRIs)</a> [<cite><a href="#bib-RFC3987"
+                                               rel="biblioentry" class="bibref">RFC3987</a></cite>] Section 8, as
+            well as
+            <a class="norm" href="http://www.ietf.org/rfc/rfc3986.txt">Uniform Resource Identifier (URI): Generic Syntax</a> [<cite><a href="#bib-RFC3986" rel="biblioentry"
+class="bibref">RFC3986</a></cite>] 
+            Section 7.
+          </p>
+
+          <p>
+            Multiple IRIs may have the same appearance. Characters in
+            different scripts may look similar (a Cyrillic "о" may appear
+            similar to a Latin "o"). A character followed by combining
+            characters may have the same visual representation as another
+            character (LATIN SMALL LETTER E followed by COMBINING ACUTE
+            ACCENT has the same visual representation as LATIN SMALL LETTER
+            E WITH ACUTE).
+            </p>
+          <p>
+            Any person or application that is writing or interpreting data
+            in RDF Patch must take care to use the IRI that matches the
+            intended semantics, and avoid IRIs that make look similar.
+            Further information about matching of similar characters can be
+            found in <a class="inform"
+            href="http://www.unicode.org/reports/tr36/">Unicode Security
+            Considerations</a> [<cite><a href="#bib-UNISEC"
+            rel="biblioentry" class="bibref">UNISEC</a></cite>] and
+    <a class="norm"
+    href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource
+    Identifiers (IRIs)</a> [<cite><a href="#bib-RFC3987" rel="biblioentry"
+    class="bibref">RFC3987</a></cite>] Section 8.
+    </p>
+          </dd>
+          <dt>Interoperability considerations:</dt>
+          <dd>There are no known interoperability issues.</dd>
+          <dt>Published specification:</dt>
+          <dd>This specification.</dd>
+          <dt>Applications which use this media type:</dt>
+          <dd>
+            No widely deployed applications are known to use this media
+            type. It may be used by some web services and clients consuming
+            their data.
+          </dd>
+          <dt>Additional information:</dt>
+          <dt>Magic number(s):</dt>
+          <dd>None</dd>
+          <dt>File extension(s):</dt>
+          <dd>".rdfp"</dd>
+          <dt>Macintosh file type code(s):</dt>
+          <dd>"TEXT"</dd>
+          <dt>Person &amp; email address to contact for further information:</dt>
+          <dd>Andy Seaborne &lt;andy@a.o&gt;</dd>
+          <dt>Intended usage:</dt>
+          <dd>COMMON</dd>
+          <dt>Restrictions on usage:</dt>
+          <dd>None</dd>
+          <dt>Author/Change controller:</dt>
+          <dd>TDB</dd>
+        </dl>
+      -->
+    </section>
+
+
   </body>
 </html>
 
