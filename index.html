@@ -110,8 +110,28 @@
     <section>
       <h2>Use Cases</h2>
       <p>
-        Use cases:
+        This section outlines some use cases for RDF patch.
       </p>
+
+      <section>
+        <h3>HTTP PATCH</h3>
+        <p>
+          The HTTP PATCH method, introduced
+          in <a href="http://tools.ietf.org/html/rfc5789">RFC 5789</a> (March 2010),
+          is for modification of a web resource by sending a description of the
+          changes to the resourse.  Changes are limited to that resource.
+        </p>
+        <p>
+          SPARQL Update may not be suitable and follwos a service oriented
+          model of operation.  A more focused and light weight solution is
+          given by RDF Patch.  For example, where the web resource is an
+          RDf graph, not an RDF dataset.
+        </p>
+        <p>
+          No new web resources can be created by RDF patch. Data can only
+          be added and removed from an existing graph or dataset.
+        </p>
+      </section>
 
       <section>
         <h3>Incremental backup</h3>
@@ -142,10 +162,8 @@
           manner - that is, blank nodes within the dataset are treated
           identically.
         </p>
-    </section>
-
-
-
+      </section>
+      
       <section>
         <h3>Data Staging</h3>
         <p>
@@ -179,16 +197,18 @@
  A &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Bob" .</pre>
 
       <p>
-        <tt>A</tt> means "add", <tt>D</tt> means "delete".
+        In RDF patch, the first column is the oepration marker.
+        <tt>A</tt> means "add" and <tt>D</tt> means "delete".
       </p>
       <p>
         The order in the file is significant - the changes happened in the
         order given so the first triple added with "Robert" as Bob's name
-        is removed by the later delete.
+        is removed by the later delete when the name is changed from
+        "Robert" to "Bob".
       </p>
     </section>
     <section>
-      <h2>Details</h2>
+      <h2>RDF Patch Details</h2>
       
       <p>
         An RDF Dataset is defined as a a set of a unnamed graph and zero or
@@ -209,7 +229,7 @@
       </p>
 
       <p>
-        <tt>\#</tt> starts a comment and it runs until the end of line.
+        <tt>#</tt> starts a comment and it runs until the end of line.
         Note that RDF Tuple rows are delimited by DOT and may have white
         space between the RDF terms, including newlines.
       </p>
@@ -271,11 +291,11 @@
           changes.
         </li>
         <li>
-          Blank nodes are recorded as "_:_id_" where _id_ can be the
+          Blank nodes are recorded as <tt>:<i>_id</i></tt> where <i>id</i> can be the
           system-internal identifier for the blank node.  This means that
           changes involving blank nodes can be replayed to get an identical
           datasets to the one where the changes were originally made.  This
-          is RDF Patch's interpretation of the <tt>\_:abc</tt> syntax;
+          is RDF Patch's interpretation of the <tt>_:abc</tt> syntax;
           other uses of RDF Tuples may have different scoping rules for
           blank node labels.
         </li>
@@ -313,6 +333,7 @@
     <section>
       <h2>RDF Tuples Format</h2>
 
+      <p class="todo">@@Make formal</p>
       <p><i>Outline grammar</i></p>
 
       <p>
@@ -343,10 +364,26 @@ VAR     = (from SPARQL)</pre>
     <section>
       <h2>RDF Patch Use of RDF Tuples.</h2>
       
+      <p class="todo">@@Make formal</p>
       <p>
-        RDF patch uses RDF Tuples for triples or quads (N-Quad order).
+        RDF patch uses RDF Tuples for triples or quads (N-Quad order).  It
+        requires the first item in a row to be a keyword (<tt>A</tt>
+        or <tt>D</tt>). 
       </p>
-
+      <p>
+        After the first keyword <tt>RowItem</tt>, there are 3 or
+        4 <tt>RowItem</tt>s which are either RDF Terms or the
+        keyword <tt>R</tt>, for an RDF term erpeated from the  last use in
+        this row position.
+      </p>
+      <p>
+        Blank node labels are treated as encoded internal system
+        identifiers.  System may refuse to perfrom changes 
+        if they do not recogize the label format.
+      </p>
+      <p>
+        RDF Patch does not allow <tt>VAR</tt>.
+      </p>
     </section>
 
     <section>
@@ -414,6 +451,8 @@ A &lt;http://example/bob&gt; foaf:name "Bob" &lt;http://example/graphName&gt; .
     <section>
       <h2>Minimize actions</h2>
 
+      <p class="todo">@@ Need a better name</p>
+
       <p>
         A further way in which the size of a diff file can be reduced is to
         only record changes that do have an effect of a change.  And RDF
@@ -463,8 +502,10 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
       </p>
     </section>
 
+    <!--
     <section>
       <h2>Relationship to SPARQL Update</h2>
+      <p class="todo">@@ Outline only</p>
       <ul>
         <li><tt>INSERT DATA</tt> and <tt>DELETE DATA</tt></li>
         <li>Can use more readable form - Turtle-like syntax.</li>
@@ -473,7 +514,7 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
       </ul>
         
     </section>
-      
+    -->
 
     <section class="appendix" id="media-type">
       <h2>Internet Media Type, File Extension and Macintosh File Type</h2>
