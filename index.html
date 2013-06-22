@@ -84,6 +84,7 @@
         <li>Inline meta data for the patch</li>
         <li>Link meta data for the patch</li>
         <li>Binary encoding</li>
+        <li>Shoudl we require one per quad/triple change (probably "no")</li>
         <li>Should bNodes have a special encoding like &lt;_:label&gt; to
 avoid confusion.
       </ul>
@@ -411,7 +412,7 @@ A &lt;http://example/bob&gt; foaf:name "bob" .</pre>
 @prefix  foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 D &lt;http://example/bob&gt; foaf:name "bob" .
 A &lt;http://example/bob&gt; foaf:name "Bob" .
-A R foaf:knows "Bob" &lt;http://example/alice&gt; .
+A R foaf:knows &lt;http://example/alice&gt; .
 A R R &lt;http://example/charlie&gt; .</pre>
 
         <p>In the last row, we add a triple</p>
