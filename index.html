@@ -195,8 +195,8 @@
  A &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Robert" .
  A &lt;http://example.org/bob> &lt;http://xmlns.com/foaf/0.1/knows> &lt;http://example/alice> .
  A &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Alice" .
- D &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Robert" .
- A &lt;http://example.org/alice> &lt;http://xmlns.com/foaf/0.1/name> "Bob" .</pre>
+ D &lt;http://example.org/bob> &lt;http://xmlns.com/foaf/0.1/name> "Robert" .
+ A &lt;http://example.org/bob> &lt;http://xmlns.com/foaf/0.1/name> "Bob" .</pre>
 
       <p>
         In RDF patch, the first column is the operation marker.
@@ -391,63 +391,77 @@ VAR     = (from SPARQL)</pre>
     <section>
       <h2>Further RDF Patch Examples</h2>
 
-    <section>
-      <h3>Add a triple to a graph or default graph of the dataset</h3>
-<pre class="box">
-A &lt;http://example/bob&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; "Bob" .
-</pre>
 
-      <p>This is the same as:</p>
+      <section>
+        <h3>Changes to a Graph</h3>
+<pre class="box">
+A &lt;http://example/bob&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; "Bob" .</pre>
+
+        <p>This is the same as:</p>
 
 <pre class="box">
 @prefix  foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
-A &lt;http://example/bob&gt; foaf:name "bob" .
-</pre>
+A &lt;http://example/bob&gt; foaf:name "bob" .</pre>
 
-      <p>A slightly longer change: To add multiple triples:</p>
+        <p>A slightly longer change: To add multiple triples:</p>
 
 <pre class="box">
 @prefix  foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 D &lt;http://example/bob&gt; foaf:name "bob" .
 A &lt;http://example/bob&gt; foaf:name "Bob" .
 A R foaf:knows "Bob" &lt;http://example/alice&gt; .
-A R R &lt;http://example/charlie&gt; .
-</pre>
+A R R &lt;http://example/charlie&gt; .</pre>
 
-      <p>In the last row, we add a triple</p>
+        <p>In the last row, we add a triple</p>
 
 <pre class="box">
-&lt;http://example/bob&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; &lt;http://example/charlie&gt; .
-</pre>
+&lt;http://example/bob&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; &lt;http://example/charlie&gt; .</pre>
 
-      <p>The repeat marker can be used in any position and across adds and deletes</p>
+        <p>The repeat marker can be used in any position and across adds and deletes</p>
 
 <pre class="box">
 @prefix  foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 A &lt;http://example/alice&gt; foaf:knows &lt;http://example/charlie&gt; .
-A &lt;http://example/bob&gt; R R .
-</pre>
+A &lt;http://example/bob&gt; R R .</pre>
 
 <pre class="box">
 @prefix  foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 D &lt;http://example/bob&gt; foaf:name "Robert" .
-A R R "Bob" .
+A R R "Bob" .</pre>
+      </section>
+
+      <section>
+        <h3>Use with HTTP PATCH</h3>
+        <p>
+           <a href="http://tools.ietf.org/html/rfc5789">HTTP PATCH (RFC
+           578)</a> introduced a mechanism for sending changes to a web
+           resources. The <a href="www.w3.org/TR/sparql11-http-rdf-update"
+           >SPARQL Graph Store Protocol</a> mentions the use of HTTP Patch.
+           RDF Patch is a suitable alternative to full SPARQL Update for
+           the HTTP request body.
+        </p>
+<pre class="box">
+  PATCH /resource HTTP/1.1
+  Host: example.org
+  Content-Type: application/rdf-patch
+
+  A &lt;http://example.org/alice&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; "Robert" .
+  A &lt;http://example.org/bob&gt; &lt;http://xmlns.com/foaf/0.1/knows&gt; &lt;http://example/alice&gt; .
+  A &lt;http://example.org/alice&gt; &lt;http://xmlns.com/foaf/0.1/name&gt; "Alice" .
+  D &lt;http://example.org/bob&gt; R "Robert" .
+  A R R "Bob" .
 </pre>
+      </section>
 
+      <section>
+        <h3>Named Graphs</h3>
 
-
-    </section>
-
-    <section>
-      <h3>Named Graphs</h3>
-
-      <p>Named graphs are changed by specifying quads</p>
+        <p>Named graphs are changed by specifying quads</p>
 
 <pre class="box">
-A &lt;http://example/bob&gt; foaf:name "Bob" &lt;http://example/graphName&gt; .
-</pre>
+A &lt;http://example/bob&gt; foaf:name "Bob" &lt;http://example/graphName&gt; .</pre>
 
-    </section>
+      </section>
     </section>
 
     <section>
