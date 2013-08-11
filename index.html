@@ -31,7 +31,10 @@
       .todo		{ font-size: 80% ; color: #444 ; }    
     </style>
 
+    <!--
     <script src='http://www.w3.org/Tools/respec/respec-w3c-common' class='remove'></script>
+    -->
+    <script src='respec-w3c-common' class='remove'></script>
 
     <script class='remove'>
       var respecConfig = {
@@ -75,22 +78,6 @@
   </head>
   <body>
 
-    <h2>Notes</h2>
-    <div class="todo">
-      <p>@@</p>
-      <ul>
-        <li>Handling very long literals (VLL) - special handling?</li>
-        <li>Explicit type marker (patch, reversible patch, ...)
-        <li>Inline meta data for the patch</li>
-        <li>Link meta data for the patch</li>
-        <li>Binary encoding</li>
-        <li>Should we require one per quad/triple change (probably "no")</li>
-        <li>Should bNodes have a special encoding like &lt;_:label&gt; to
-avoid confusion.
-      </ul>
-      <p>@@</p>
-    </div>
-      
     <section id='abstract'>
       <p>
         RDF Patch is a file format for recording changes made to an RDF
@@ -537,13 +524,140 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
     </section>
     -->
 
+    <section class="appendix" id="notes">
+      <h2>Notes</h2>
+      <p>This section contains working notes for the development of 
+        this document.</p>
+
+      <p>Simplicity of design leads to widespread adoption,
+        which is important for the core use of managing chanage to RDF
+        data.  All features need to balance their utility for
+        a partcular use case with the increase in complexity and
+        implementation costs.
+      </p>
+
+      <section id="line-mode">
+        <h3>Line Mode</h3>
+        <p>The <a href="#rdf-tuples-format">grammar</a> does not specific
+          that tuples must be one per line. Long lines can be split.  If
+          there is no reason to require one tuple per line this is
+          convenient even in a machine oriented format.</p>
+        <p>
+          But there some advantages in a strictly one-line-erp-tuple
+          format.
+        </p>
+        <ul>
+          <li><p>Bulk processing with command line text processing tools is also
+          much simpler if one tuples per line is required.
+          </p></li>
+
+          <li><p>Some features below require markers in the data stream so
+          requiring them at the start-on-line is convenient.
+          </p></li>
+        </ul>
+
+        <p>
+          <b>Proposal:</b> One tuple per line.
+        </p>
+      </section>
+
+      <section id="metadata">
+        <h3>Metadata</h3>
+        <p>There are two metadata needs: linking and inline.</p>
+        <section id="metadata-linking">
+          <h4>Linking</h4>
+          <p>Linking can be achieved with an <tt>L</tt> (or<tt>LINK</tt>)
+            record. However, the link may be unavailable or is subject to
+            change after the patch is created.
+          </p>
+        </section>
+        <section id="metadata-inline">
+          <h4>Inline</h4>
+          <p>See this <a href="http://markmail.org/message/2adctbcxfxvepsep">discussion</a></p>
+          <p>
+            Inline metadata is not subject to such changes.  It is 
+            made a little more complicated because RDF-patch is not an RDF
+            syntax (the handling of blank nodes is different).
+          </p>
+          <p><b>Proposal:</b> A single line of <tt>METADATA</tt> starts or
+            stops a block of characters that is passed to a Turtle parser.
+            Blank nodes are handled as per RDF; full Turtle readability
+            idioms apply.  The block must not contain the
+            string <tt>METADATA</tt> at the start of line.
+          </p>
+        </section>
+      </section>
+        
+      <section id="transaction-boundaries">
+        <h3>Transaction Boundaries</h3>
+        <p>The RDF patch format can be used to record one set of related
+          changes, a group of related changes or as a stream of changes.
+          When used to record one set of relate changes, the changes
+          should be applied atomically - they all happen or none of them
+          happen.
+        </p>
+        <p class="todo">@@ As part of a section in a more formal style, add
+          the atomicity requirement.</p>
+
+        <p>We define
+          atomicity as a "SHOULD" because we do not exclude the use of a
+          data format just because of specific system sisues such as
+          light-weight implementation or usages that do not need this
+          feature.
+          </p>
+
+        <p>While (ACID) transactions do give atomicity, they are not the
+          only way and are apprropriate for large systems.
+        </p>
+
+        <p>The requirement on the RDF Patch format is to have markers for
+          the beginning and end of sections of changes.
+        </p>
+
+
+         <p><b>Proposal:</b> Add <tt>BEGIN</tt> and <tt>END</tt> to
+           indicate a block of changes.  A block shoudl be applied 
+           </p>
+         <p>The start of file is an implicit <tt>BEGIN</tt> and the end
+           of file is an implicit <tt>END</tt>.
+           </p>
+      </section>
+
+      <section id="alternative-bnode-syntax">
+        <h3>Alternative Blank Node Syntax</h3>
+        <p>Should blank nodes have a special encoding like <tt>&lt;_:label&gt;</tt>
+          to avoid confusion?
+        </p>
+      </section>
+
+      <section id="alignment-errors">
+        <h3>Alignment Errors</h3>
+        <p>Error handling : from 
+          <a href="https://twitter.com/kasei/statuses/365504027896717315">tweet</a>
+        </p>
+        <p>Need to define what happens when <tt>R</tt> does not align to
+          the previous tuple (presumable an error - define recovery 
+          for stream use).
+        </p>
+      </section>
+
+      <section id="binary-format">
+        <h3>Binary Format</h3>
+        <p>An alterntative wire format for efficient processing.</p>
+        <p class="todo">(Need to quantify the gains, if any).</p>
+      </section>
+
+    </section>
+
+
     <section class="appendix" id="media-type">
-      <p class="todo">@@ Use application/rdf-patch+text for text serialization and application/rdf-patch+binary for TBD binary serialization</p>
-    
       <h2>Internet Media Type, File Extension and Macintosh File Type</h2>
+    
       <p>The Internet Media Type / MIME Type for RDF Patch is "application/rdf-patch".</p>
       <p>The character set RDF Patch is "UTF-8".</p>
-      <p>It is recommended that RDF Patch files have the extension ".rdfp" (all lowercase) on all platforms.</p>
+      <p>It is recommended that RDF Patch files have the extension ".rdfp"
+        (all lowercase) on all platforms.
+      </p>
       <p>
         It is recommended that RDF Patch files stored on Macintosh HFS file
         systems be given a file type of "TEXT".
