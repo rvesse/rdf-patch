@@ -354,7 +354,7 @@ VAR     = (from SPARQL)</pre>
     </section>
 
     <section>
-      <h2>RDF Patch Use of RDF Tuples.</h2>
+      <h2>RDF Patch Use of RDF Tuples</h2>
       
       <p class="todo">@@Make formal</p>
       <p>
@@ -625,8 +625,12 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
 
       <section id="alternative-bnode-syntax">
         <h3>Alternative Blank Node Syntax</h3>
-        <p>Should blank nodes have a special encoding like <tt>&lt;_:label&gt;</tt>
-          to avoid confusion?
+        <p>Both RDF-style (document scoped labels, new blank nodes created)
+          and store-scoped (existing blank nodes) are needed. This may
+          require two syntaxes to distinguish.</p>
+        <p>Should store-scoped blank nodes have a special encoding like 
+          <tt>&lt;_:label&gt;</tt> and the <tt>_:label</tt> form behave
+          like RDF syntax?
         </p>
       </section>
 
