@@ -616,7 +616,9 @@ A &lt;http://example/other&gt; &lt;http://example/p&gt; 123 &lt;http://example/g
 
 
          <p><b>Proposal:</b> Add <tt>BEGIN</tt> and <tt>END</tt> to
-           indicate a block of changes.  A block shoudl be applied 
+           indicate a block of changes.  A block should be applied
+           atomically.  This maybe a transaction - it depends on the
+           nature of the destination.
            </p>
          <p>The start of file is an implicit <tt>BEGIN</tt> and the end
            of file is an implicit <tt>END</tt>.
